@@ -373,8 +373,14 @@
     document.getElementById('overlay').classList.remove('open');
   }
 
+  // $9.000 de respaldo por si se toca "Diseño personalizado" antes de que termine de
+  // cargar el catálogo (que es lo que traía $NaN en el precio).
+  var PRECIO_PERSONALIZADO_FALLBACK = 9000;
+
   function precioDe(sel){
-    if (sel.variante === 'personalizado') return CATALOGO.precios.personalizado;
+    if (sel.variante === 'personalizado') {
+      return (CATALOGO.precios && CATALOGO.precios.personalizado) || PRECIO_PERSONALIZADO_FALLBACK;
+    }
     return CATALOGO.precios[sel.variante][sel.linea];
   }
 
