@@ -431,11 +431,14 @@
     actualizarPrecioPreview();
   }
 
+  var FOTO_SUBIENDO = false;
+
   function subirFotoPersonalizada(event){
     var file = event.target.files[0];
     if (!file) return;
+    FOTO_SUBIENDO = true;
     var msgEl = document.getElementById('foto-personalizado-msg');
-    msgEl.textContent = 'Subiendo foto…';
+    msgEl.textContent = 'Subiendo foto… esperá antes de agregar al pedido.';
     var reader = new FileReader();
     reader.onload = function(e){
       var img = new Image();
@@ -458,6 +461,7 @@
         })
           .then(function(r){ return r.json(); })
           .then(function(res){
+            FOTO_SUBIENDO = false;
             if (res.success){
               seleccionActual.fotoUrl = res.url;
               msgEl.textContent = '¡Foto subida!';
@@ -466,6 +470,7 @@
             }
           })
           .catch(function(){
+            FOTO_SUBIENDO = false;
             msgEl.textContent = 'No se pudo subir la foto. Podés seguir sin ella.';
           });
       };
@@ -512,6 +517,10 @@
   }
 
   function agregarAlPedido(){
+    if (FOTO_SUBIENDO){
+      alert('Esperá un segundo, todavía se está subiendo la foto.');
+      return;
+    }
     var s = seleccionActual;
     var item = {
       nombre: s.nombre,
