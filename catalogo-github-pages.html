@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo PUPINA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink: #FD579F;
+    --pink-dark: #F04C78;
+    --pink-light: #ffe1ee;
+    --bg: #FFD6E1;
+    --bg-deco: #FF80A2;
+    --cream: #F9F6F1;
+    --text: #6b2340;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0; padding:0;
+    font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 90px;
+  }
+  h1, h2, .brand-title{ font-family: 'Fredoka', 'Quicksand', sans-serif; }
+  .bubble-title{
+    font-family: 'Fredoka', 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: var(--pink-dark);
+    -webkit-text-stroke: 3px #fff;
+    paint-order: stroke fill;
+    text-shadow: 0 3px 0 rgba(240,76,120,.28);
+    letter-spacing: 1px;
+  }
+  header{
+    position: relative;
+    background: transparent;
+    color: var(--pink-dark);
+    padding: 26px 16px 22px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .heart-deco{
+    position:absolute; color: var(--bg-deco); opacity:.4; line-height:1; pointer-events:none;
+    font-family: Arial, sans-serif;
+  }
+  .heart-deco.h1{ top:-6px; left:6%; font-size:52px; transform:rotate(-12deg); }
+  .heart-deco.h2{ top:14px; right:8%; font-size:38px; transform:rotate(10deg); opacity:.3; }
+  .heart-deco.h3{ top:64%; left:2%; font-size:30px; transform:rotate(-6deg); opacity:.28; }
+  .heart-deco.h4{ top:58%; right:4%; font-size:44px; transform:rotate(14deg); opacity:.32; }
+  .logo-badge{
+    position:relative; z-index:1;
+    width: 92px; height: 92px; border-radius: 50%; background: var(--cream);
+    margin: 0 auto 10px; display:flex; align-items:center; justify-content:center;
+    overflow:hidden; box-shadow: 0 4px 10px rgba(230,80,140,.25);
+  }
+  .logo-badge img{ width: 78%; height:auto; display:block; }
+  .brand-title{
+    position:relative; z-index:1;
+    margin: 0 0 10px; font-size: 40px; letter-spacing: 2px;
+  }
+  header p{ position:relative; z-index:1; margin:0 auto; max-width: 480px; color: var(--pink-dark); font-size: 14.5px; font-weight:600; line-height:1.5; }
+  header p.tagline-sub{ font-size: 13px; font-weight:500; margin-top:6px; opacity:.9; }
+  .precios-box{
+    position:relative; z-index:1;
+    max-width: 480px; margin: 16px auto 0; background: #fff;
+    border-radius: 14px; padding: 12px 16px; font-size: 12.5px; line-height: 1.6;
+    color: var(--text); box-shadow: 0 2px 10px rgba(230,80,140,.15);
+  }
+  .custom-cta{
+    max-width: 720px; margin: 16px auto 0; padding: 0 16px;
+  }
+  .custom-cta button{
+    width:100%; background:#fff; color: var(--pink-dark); border: 2px dashed var(--pink);
+    border-radius: 999px; padding: 12px; font-size: 14px; font-weight: 600; cursor:pointer;
+    font-family:'Fredoka','Quicksand',sans-serif;
+  }
+  .filtros{ max-width: 720px; margin: 18px auto 0; padding: 0 16px; }
+  .buscador-input{
+    width:100%; padding: 12px 16px; border-radius: 999px; border: none; font-size:14px;
+    font-family:'Quicksand',sans-serif; box-shadow: 0 2px 8px rgba(230,80,140,.15); margin-bottom: 12px;
+  }
+  .chips{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+  .chip{
+    flex-shrink:0; border: 2px solid var(--pink); border-radius: 999px; padding: 7px 14px; font-size:12.5px;
+    cursor:pointer; background:#fff; color: var(--pink-dark); font-weight:700; white-space:nowrap;
+    font-family:'Fredoka','Quicksand',sans-serif;
+  }
+  .chip.selected{ background: var(--pink-dark); border-color: var(--pink-dark); color:#fff; }
+  .grid{
+    max-width: 720px; margin: 18px auto; padding: 0 12px;
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  @media(min-width:600px){ .grid{ grid-template-columns: repeat(3,1fr);} }
+  .categoria-seccion{ max-width: 720px; margin: 0 auto; }
+  .categoria-heading{
+    font-family:'Fredoka','Quicksand',sans-serif; color: var(--pink-dark); font-weight:700;
+    font-size: 17px; margin: 20px 16px 4px; padding-bottom:6px; border-bottom: 2px solid var(--pink-light);
+  }
+  .categoria-seccion:first-child .categoria-heading{ margin-top: 4px; }
+  .card{
+    background:#fff; border-radius: 16px; overflow:hidden; cursor:pointer;
+    box-shadow: 0 2px 8px rgba(230,80,140,.15);
+    transition: transform .12s ease;
+    display:flex; flex-direction:column;
+  }
+  .card:active{ transform: scale(.97); }
+  .card img{ width:100%; aspect-ratio: 7/12; object-fit: contain; background:var(--pink-light); display:block; }
+  .card .nombre{ padding: 8px 10px 10px; font-size: 15.5px; font-weight:600; text-align:center; font-family:'Fredoka','Quicksand',sans-serif; }
+  .empty, .loading{ text-align:center; padding: 40px 20px; color:#a35; }
+
+  .overlay{
+    position:fixed; inset:0; background: rgba(80,20,50,.45);
+    display:none; align-items:flex-end; justify-content:center; z-index:50;
+  }
+  .overlay.open{ display:flex; }
+  .sheet{
+    background:#fff; width:100%; max-width: 480px; border-radius: 20px 20px 0 0;
+    padding: 20px 18px 22px; max-height: 88vh; overflow-y:auto;
+  }
+  .sheet h2{ margin: 0 0 12px; font-size: 22px; color: var(--pink-dark); -webkit-text-stroke: 1.5px #fff; paint-order: stroke fill; }
+  .sheet img.preview{ width: 100%; max-height: 220px; object-fit:contain; border-radius: 12px; background:var(--pink-light); margin-bottom: 12px; }
+  .field-label{ font-size: 13px; font-weight:700; margin: 12px 0 6px; color: var(--pink-dark); }
+  .options{ display:flex; gap:8px; flex-wrap:wrap; }
+  .opt{
+    border: 2px solid var(--pink); border-radius: 999px; padding: 8px 14px; font-size:13px;
+    cursor:pointer; background:#fff; color: var(--pink-dark); font-weight:600;
+    font-family:'Fredoka','Quicksand',sans-serif;
+  }
+  .opt.selected{ background: var(--pink); color:#fff; }
+  .detalle-input{
+    width:100%; padding:10px; border-radius:10px; border:1px solid #ecc; font-size:14px; margin-top:6px;
+  }
+  .qty-row{ display:flex; align-items:center; gap:14px; margin-top:8px; }
+  .qty-btn{
+    width:36px; height:36px; border-radius:50%; border:none; background: var(--pink);
+    color:#fff; font-size:18px; cursor:pointer;
+  }
+  .qty-num{ font-size:18px; font-weight:700; min-width:24px; text-align:center; }
+  .precio-preview{ margin-top: 14px; font-size: 15px; font-weight:700; color: var(--pink-dark); }
+  .sheet-actions{ display:flex; gap:10px; margin-top:18px; }
+  .btn-secondary, .btn-primary{
+    flex:1; padding: 13px; border-radius: 999px; border:none; font-size:14px; font-weight:700; cursor:pointer;
+    font-family:'Fredoka','Quicksand',sans-serif;
+  }
+  .btn-secondary{ background:#f2eaee; color: var(--text); }
+  .btn-primary{ background: var(--pink-dark); color:#fff; }
+
+  .cart-bar{
+    position:fixed; bottom:0; left:0; right:0; background:#fff;
+    box-shadow: 0 -3px 14px rgba(0,0,0,.12); padding: 10px 14px;
+    display:flex; align-items:center; justify-content:space-between; z-index:40;
+  }
+  .cart-bar .info{ font-size: 13px; }
+  .cart-bar .info b{ display:block; font-size:15px; }
+  .cart-bar button{
+    background: var(--pink-dark); color:#fff; border:none; border-radius: 999px;
+    padding: 12px 18px; font-size:14px; font-weight:700; cursor:pointer;
+    font-family:'Fredoka','Quicksand',sans-serif;
+  }
+  .cart-list{ margin-top: 10px; }
+  .cart-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 8px 0; border-bottom: 1px solid #f4dfe8; font-size: 13px;
+  }
+  .cart-item .del{ color:#c33; background:none; border:none; font-size:12px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="heart-deco h1">♥</span>
+  <span class="heart-deco h2">♥</span>
+  <span class="heart-deco h3">♥</span>
+  <span class="heart-deco h4">♥</span>
+  <div class="logo-badge">
+    <img id="logo-img" src="" alt="PUPINA" style="display:none">
+  </div>
+  <h1 class="brand-title bubble-title">PUPINA</h1>
+  <p>Porque toda buena historia merece un lugar donde esperarte.</p>
+  <p class="tagline-sub">Esperamos que encuentres el marcapáginas perfecto para tu próxima lectura.</p>
+  <div class="precios-box">
+    💗 Diseño original — Fold $6.500 · Plana $5.000<br>
+    🎨 Diseño adaptado (color/nombre/frase) — Fold $7.500 · Plana $6.000
+  </div>
+</header>
+
+<div class="custom-cta">
+  <button onclick="abrirPersonalizado()">✨ Quiero un diseño 100% personalizado — $9.000</button>
+</div>
+
+<div class="filtros">
+  <input type="text" id="buscador" class="buscador-input" placeholder="🔍 Buscar por nombre o palabra clave…" oninput="renderGrid()">
+  <div id="categorias-chips" class="chips"></div>
+</div>
+
+<div id="grid"><div class="loading">Cargando modelos…</div></div>
+
+<div id="overlay" class="overlay">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="cart-bar">
+  <div class="info">
+    <span id="cart-count">0 items</span>
+    <b id="cart-total">$0</b>
+  </div>
+  <button onclick="verPedido()">Ver pedido</button>
+</div>
+
+<script>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpW52bZmGEAx1vGeNA1nzRdBEr_A2XkG9SmdiCOuwtMNKjcbafOnt8fbraKVVAyS8z/exec';
+
+  var CATALOGO = { modelos: [], precios: {}, whatsapp: "" };
+  var CART = JSON.parse(localStorage.getItem('pupina_cart') || '[]');
+  var seleccionActual = null;
+  var FORMA_PAGO = null;
+  var CATEGORIA_ACTIVA = 'Todos';
+
+  function cargar(){
+    fetch(APPS_SCRIPT_URL + '?action=catalogo')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        CATALOGO = data;
+        if (CATALOGO.logoUrl){
+          var logoImg = document.getElementById('logo-img');
+          logoImg.src = CATALOGO.logoUrl;
+          logoImg.style.display = 'block';
+        }
+        renderCategorias();
+        renderGrid();
+        actualizarBarra();
+      })
+      .catch(function(err){
+        document.getElementById('grid').innerHTML = '<div class="empty">No se pudo cargar el catálogo. Refrescá la página.</div>';
+      });
+  }
+
+  function categoriasDe(m){
+    var cats = (m.categoria || '').split(',').map(function(c){ return c.trim(); }).filter(Boolean);
+    return cats.length ? cats : ['Sin categoría'];
+  }
+
+  function renderCategorias(){
+    var el = document.getElementById('categorias-chips');
+    var categorias = {};
+    CATALOGO.modelos.forEach(function(m){
+      categoriasDe(m).forEach(function(c){ categorias[c] = true; });
+    });
+    var lista = Object.keys(categorias).sort();
+    if (lista.length <= 1){ el.innerHTML = ''; return; }
+    var todas = ['Todos'].concat(lista);
+    el.innerHTML = todas.map(function(c){
+      var sel = c === CATEGORIA_ACTIVA ? ' selected' : '';
+      return '<div class="chip' + sel + '" onclick="elegirCategoria(\'' + c.replace(/'/g,"\\'") + '\')">' + c + '</div>';
+    }).join('');
+  }
+
+  function elegirCategoria(c){
+    CATEGORIA_ACTIVA = c;
+    renderCategorias();
+    renderGrid();
+  }
+
+  function coincideBusqueda_(m, buscado){
+    if (!buscado) return true;
+    var coincideNombre = m.nombre.toLowerCase().indexOf(buscado) >= 0;
+    var coincidePalabras = (m.palabrasClave || '').toLowerCase().indexOf(buscado) >= 0;
+    return coincideNombre || coincidePalabras;
+  }
+
+  function cardHtml_(m){
+    return '<div class="card" onclick="abrirModelo(' + m.id + ')">' +
+      '<img src="' + m.imagenUrl + '" loading="lazy" alt="' + m.nombre + '">' +
+      '<div class="nombre">' + m.nombre + '</div></div>';
+  }
+
+  function renderGrid(){
+    var el = document.getElementById('grid');
+    var buscado = (document.getElementById('buscador').value || '').toLowerCase().trim();
+
+    if (!CATALOGO.modelos.length){
+      el.innerHTML = '<div class="empty">Todavía no hay modelos cargados.</div>';
+      return;
+    }
+
+    if (CATEGORIA_ACTIVA !== 'Todos'){
+      var modelosCategoria = CATALOGO.modelos.filter(function(m){
+        return categoriasDe(m).indexOf(CATEGORIA_ACTIVA) >= 0 && coincideBusqueda_(m, buscado);
+      });
+      if (!modelosCategoria.length){
+        el.innerHTML = '<div class="empty">No encontramos diseños que coincidan. Probá con otra búsqueda.</div>';
+        return;
+      }
+      el.innerHTML = '<div class="grid">' + modelosCategoria.map(cardHtml_).join('') + '</div>';
+      return;
+    }
+
+    var categorias = {};
+    CATALOGO.modelos.forEach(function(m){
+      categoriasDe(m).forEach(function(c){
+        if (!categorias[c]) categorias[c] = [];
+        categorias[c].push(m);
+      });
+    });
+    var nombresCategorias = Object.keys(categorias).sort(function(a, b){
+      if (a === 'Sin categoría') return 1;
+      if (b === 'Sin categoría') return -1;
+      return a.localeCompare(b, 'es');
+    });
+
+    if (nombresCategorias.length <= 1){
+      var todosFiltrados = CATALOGO.modelos.filter(function(m){ return coincideBusqueda_(m, buscado); });
+      if (!todosFiltrados.length){
+        el.innerHTML = '<div class="empty">No encontramos diseños que coincidan. Probá con otra búsqueda.</div>';
+        return;
+      }
+      el.innerHTML = '<div class="grid">' + todosFiltrados.map(cardHtml_).join('') + '</div>';
+      return;
+    }
+
+    var html = '';
+    var huboResultados = false;
+    nombresCategorias.forEach(function(cat){
+      var modelosCat = categorias[cat].filter(function(m){ return coincideBusqueda_(m, buscado); });
+      if (!modelosCat.length) return;
+      huboResultados = true;
+      html += '<div class="categoria-seccion">' +
+        '<div class="categoria-heading">' + cat + '</div>' +
+        '<div class="grid">' + modelosCat.map(cardHtml_).join('') + '</div>' +
+      '</div>';
+    });
+
+    if (!huboResultados){
+      el.innerHTML = '<div class="empty">No encontramos diseños que coincidan. Probá con otra búsqueda.</div>';
+      return;
+    }
+    el.innerHTML = html;
+  }
+
+  function abrirModelo(id){
+    var m = CATALOGO.modelos.find(function(x){ return x.id == id; });
+    if (!m) return;
+    seleccionActual = { tipo: 'catalogo', modeloId: m.id, nombre: m.nombre, linea: 'plana', variante: 'original', detalle: '', cantidad: 1 };
+    pintarSheet(m);
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function abrirPersonalizado(){
+    seleccionActual = { tipo: 'personalizado', nombre: 'Diseño 100% personalizado', linea: '', variante: 'personalizado', detalle: '', cantidad: 1 };
+    pintarSheetPersonalizado();
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function cerrarSheet(){
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function precioDe(sel){
+    if (sel.variante === 'personalizado') return CATALOGO.precios.personalizado;
+    return CATALOGO.precios[sel.variante][sel.linea];
+  }
+
+  function pintarSheet(m){
+    var s = seleccionActual;
+    var lineaHtml = m.soloPlana
+      ? '<div class="field-label">Línea</div><div style="font-size:13px;color:#a35;margin-bottom:4px;">Este diseño está disponible únicamente en línea Plana.</div>'
+      : '<div class="field-label">Línea</div><div class="options">' + opt('linea','fold','Fold (imantado)') + opt('linea','plana','Plana') + '</div>';
+    document.getElementById('sheet').innerHTML =
+      '<img class="preview" src="' + m.imagenUrl + '">' +
+      '<h2>' + m.nombre + '</h2>' +
+      lineaHtml +
+      '<div class="field-label">Tipo</div>' +
+      '<div class="options">' +
+        opt('variante','original','Original') + opt('variante','adaptado','Adaptado (cambio color/nombre/frase)') +
+      '</div>' +
+      '<div id="detalle-wrap" style="display:none">' +
+        '<input class="detalle-input" id="detalle-input" placeholder="Contanos qué querés cambiar (nombre, frase, color)" oninput="seleccionActual.detalle=this.value">' +
+      '</div>' +
+      '<div class="field-label">Cantidad</div>' +
+      '<div class="qty-row">' +
+        '<button class="qty-btn" onclick="cambiarCantidad(-1)">–</button>' +
+        '<span class="qty-num" id="qty-num">1</span>' +
+        '<button class="qty-btn" onclick="cambiarCantidad(1)">+</button>' +
+      '</div>' +
+      '<div class="precio-preview" id="precio-preview"></div>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn-secondary" onclick="cerrarSheet()">Cancelar</button>' +
+        '<button class="btn-primary" onclick="agregarAlPedido()">Agregar al pedido</button>' +
+      '</div>';
+    marcarSeleccion();
+    actualizarPrecioPreview();
+  }
+
+  function pintarSheetPersonalizado(){
+    document.getElementById('sheet').innerHTML =
+      '<h2>✨ Diseño 100% personalizado</h2>' +
+      '<p style="font-size:13px;color:#a35">Creamos un diseño exclusivo desde cero para vos.</p>' +
+      '<div class="field-label">Contanos tu idea</div>' +
+      '<input class="detalle-input" id="detalle-input" placeholder="Ej: marcapáginas con mi mascota y mi nombre" oninput="seleccionActual.detalle=this.value">' +
+      '<div class="field-label">Cantidad</div>' +
+      '<div class="qty-row">' +
+        '<button class="qty-btn" onclick="cambiarCantidad(-1)">–</button>' +
+        '<span class="qty-num" id="qty-num">1</span>' +
+        '<button class="qty-btn" onclick="cambiarCantidad(1)">+</button>' +
+      '</div>' +
+      '<div class="precio-preview" id="precio-preview"></div>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn-secondary" onclick="cerrarSheet()">Cancelar</button>' +
+        '<button class="btn-primary" onclick="agregarAlPedido()">Agregar al pedido</button>' +
+      '</div>';
+    actualizarPrecioPreview();
+  }
+
+  function opt(grupo, valor, label){
+    var sel = seleccionActual[grupo] === valor ? ' selected' : '';
+    return '<div class="opt' + sel + '" onclick="elegirOpcion(\'' + grupo + '\',\'' + valor + '\')">' + label + '</div>';
+  }
+
+  function elegirOpcion(grupo, valor){
+    seleccionActual[grupo] = valor;
+    marcarSeleccion();
+    actualizarPrecioPreview();
+    var detalleWrap = document.getElementById('detalle-wrap');
+    if (detalleWrap) detalleWrap.style.display = (seleccionActual.variante === 'adaptado') ? 'block' : 'none';
+  }
+
+  function marcarSeleccion(){
+    document.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('selected'); });
+    var s = seleccionActual;
+    document.querySelectorAll('.opt').forEach(function(o){
+      var txt = o.getAttribute('onclick');
+      if (txt.indexOf("'linea','" + s.linea + "'") >= 0) o.classList.add('selected');
+      if (txt.indexOf("'variante','" + s.variante + "'") >= 0) o.classList.add('selected');
+    });
+    var detalleWrap = document.getElementById('detalle-wrap');
+    if (detalleWrap) detalleWrap.style.display = (s.variante === 'adaptado') ? 'block' : 'none';
+  }
+
+  function cambiarCantidad(delta){
+    seleccionActual.cantidad = Math.max(1, seleccionActual.cantidad + delta);
+    document.getElementById('qty-num').textContent = seleccionActual.cantidad;
+    actualizarPrecioPreview();
+  }
+
+  function actualizarPrecioPreview(){
+    var s = seleccionActual;
+    var precio = precioDe(s) * s.cantidad;
+    document.getElementById('precio-preview').textContent = 'Subtotal: $' + precio.toLocaleString('es-AR');
+  }
+
+  function agregarAlPedido(){
+    var s = seleccionActual;
+    var item = {
+      nombre: s.nombre,
+      linea: s.linea,
+      variante: s.variante,
+      detalle: s.detalle,
+      cantidad: s.cantidad,
+      precioUnit: precioDe(s)
+    };
+    CART.push(item);
+    guardarCart();
+    cerrarSheet();
+    actualizarBarra();
+  }
+
+  function guardarCart(){
+    localStorage.setItem('pupina_cart', JSON.stringify(CART));
+  }
+
+  function actualizarBarra(){
+    var total = CART.reduce(function(sum, i){ return sum + i.precioUnit * i.cantidad; }, 0);
+    var count = CART.reduce(function(sum, i){ return sum + i.cantidad; }, 0);
+    document.getElementById('cart-count').textContent = count + (count === 1 ? ' item' : ' items');
+    document.getElementById('cart-total').textContent = '$' + total.toLocaleString('es-AR');
+  }
+
+  function verPedido(){
+    if (!CART.length){
+      alert('Todavía no agregaste ningún modelo. Tocá un diseño del catálogo para empezar.');
+      return;
+    }
+    var total = CART.reduce(function(sum, i){ return sum + i.precioUnit * i.cantidad; }, 0);
+    var html = '<h2>Tu pedido</h2><div class="cart-list">' +
+      CART.map(function(item, idx){
+        var lineaTxt = item.linea ? (item.linea === 'fold' ? 'Fold' : 'Plana') + ' · ' : '';
+        var tipoTxt = item.variante === 'original' ? 'Original' : item.variante === 'adaptado' ? 'Adaptado' : 'Personalizado';
+        var detalleTxt = item.detalle ? ' — "' + item.detalle + '"' : '';
+        return '<div class="cart-item"><span>' + item.nombre + ' — ' + lineaTxt + tipoTxt + detalleTxt + ' — x' + item.cantidad + ' — $' + (item.precioUnit*item.cantidad).toLocaleString('es-AR') + '</span>' +
+          '<button class="del" onclick="borrarItem(' + idx + ')">Quitar</button></div>';
+      }).join('') +
+      '</div><div class="precio-preview">Total: $' + total.toLocaleString('es-AR') + '</div>' +
+      '<div class="field-label">Forma de pago</div>' +
+      '<div class="options" id="pago-options">' +
+        pagoOpt('efectivo', 'Efectivo') + pagoOpt('transferencia', 'Transferencia') +
+      '</div>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn-secondary" onclick="cerrarSheet()">Seguir viendo</button>' +
+        '<button class="btn-primary" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>' +
+      '</div>';
+    document.getElementById('sheet').innerHTML = html;
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function pagoOpt(valor, label){
+    var sel = FORMA_PAGO === valor ? ' selected' : '';
+    return '<div class="opt' + sel + '" onclick="elegirPago(\'' + valor + '\', this)">' + label + '</div>';
+  }
+
+  function elegirPago(valor, btnEl){
+    FORMA_PAGO = valor;
+    document.querySelectorAll('#pago-options .opt').forEach(function(o){ o.classList.remove('selected'); });
+    btnEl.classList.add('selected');
+  }
+
+  function borrarItem(idx){
+    CART.splice(idx, 1);
+    guardarCart();
+    actualizarBarra();
+    verPedido();
+  }
+
+  function enviarWhatsapp(){
+    if (!FORMA_PAGO){
+      alert('Elegí una forma de pago antes de enviar.');
+      return;
+    }
+    var total = CART.reduce(function(sum, i){ return sum + i.precioUnit * i.cantidad; }, 0);
+
+    var E_HEART_WHITE = '\u{1F90D}';
+    var E_SHOPPING_BAGS = '\u{1F6CD}️';
+    var E_HEART_SPARK = '\u{1F496}';
+    var E_HEART_PINK = '\u{1FA77}';
+    var E_STAR = '✦';
+
+    var bloques = CART.map(function(item){
+      var lineaTipo;
+      if (item.variante === 'personalizado') {
+        lineaTipo = E_STAR + ' Personalizado';
+      } else {
+        var lineaTxt = item.linea === 'fold' ? 'Fold' : 'Plana';
+        var tipoTxt = item.variante === 'original' ? 'Original' : 'Adaptado';
+        lineaTipo = E_STAR + ' ' + lineaTxt + ' · ' + tipoTxt;
+      }
+      var detalleLinea = item.detalle ? ('\n' + E_STAR + ' Detalle: ' + item.detalle) : '';
+      var subtotal = item.precioUnit * item.cantidad;
+      return E_HEART_WHITE + ' ' + item.nombre + '\n' + lineaTipo + detalleLinea +
+        '\n' + E_STAR + ' Cantidad: ' + item.cantidad +
+        '\n' + E_STAR + ' $' + subtotal.toLocaleString('es-AR');
+    }).join('\n\n');
+
+    var pagoTxt = FORMA_PAGO === 'efectivo' ? 'Efectivo' : 'Transferencia';
+
+    var msg = E_HEART_WHITE + ' ¡Hola!\nQuisiera hacer el siguiente pedido:\n\n' +
+      E_SHOPPING_BAGS + ' Mi selección\n' + bloques + '\n\n' +
+      E_HEART_SPARK + ' Total: $' + total.toLocaleString('es-AR') + '\n' +
+      E_STAR + ' Forma de pago: ' + pagoTxt + '\n\n' +
+      '¡Muchas gracias! ' + E_HEART_PINK;
+
+    var texto = encodeURIComponent(msg);
+    var deepLink = 'whatsapp://send?phone=' + CATALOGO.whatsapp + '&text=' + texto;
+    var webLink = 'https://wa.me/' + CATALOGO.whatsapp + '?text=' + texto;
+    var seFueLaApp = false;
+    var marcarSalida = function(){ seFueLaApp = true; };
+    window.addEventListener('blur', marcarSalida);
+    window.location.href = deepLink;
+    setTimeout(function(){
+      window.removeEventListener('blur', marcarSalida);
+      if (!seFueLaApp) window.open(webLink, '_blank');
+    }, 1200);
+
+    CART = [];
+    FORMA_PAGO = null;
+    guardarCart();
+    actualizarBarra();
+    cerrarSheet();
+  }
+
+  document.getElementById('overlay').addEventListener('click', function(e){
+    if (e.target.id === 'overlay') cerrarSheet();
+  });
+
+  cargar();
+</script>
+</body>
+</html>
