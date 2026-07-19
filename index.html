@@ -157,6 +157,11 @@
   }
   .btn-secondary{ background:#f2eaee; color: var(--text); }
   .btn-primary{ background: var(--pink-dark); color:#fff; }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
+  .foto-status{ display:none; font-size:12.5px; font-weight:700; padding:9px 12px; border-radius:10px; margin-top:8px; }
+  .foto-status.subiendo{ display:block; background:#fff3cd; color:#8a6d00; }
+  .foto-status.ok{ display:block; background:#e2f7e9; color:#2a8f4f; }
+  .foto-status.error{ display:block; background:#fde3e3; color:#c33; }
 
   .cart-bar{
     position:fixed; bottom:0; left:0; right:0; background:#fff;
@@ -414,7 +419,7 @@
       '<textarea class="detalle-input" id="detalle-input" rows="3" placeholder="Ej: fondo celeste, letras doradas, el nombre Mica y una luna" oninput="seleccionActual.detalle=this.value"></textarea>' +
       '<div class="field-label">Foto de referencia (opcional)</div>' +
       '<input type="file" id="foto-personalizado-input" accept="image/*" onchange="subirFotoPersonalizada(event)">' +
-      '<div id="foto-personalizado-msg" style="font-size:12px;color:#a35;margin-top:6px"></div>' +
+      '<div id="foto-personalizado-msg" class="foto-status"></div>' +
       '<img id="foto-personalizado-preview" style="width:90px;border-radius:10px;margin-top:8px;display:none">' +
       '<div class="field-label">Cantidad</div>' +
       '<div class="qty-row">' +
@@ -425,7 +430,7 @@
       '<div class="precio-preview" id="precio-preview"></div>' +
       '<div class="sheet-actions">' +
         '<button class="btn-secondary" onclick="cerrarSheet()">Cancelar</button>' +
-        '<button class="btn-primary" onclick="agregarAlPedido()">Agregar al pedido</button>' +
+        '<button class="btn-primary" id="btn-agregar-pedido" onclick="agregarAlPedido()">Agregar al pedido</button>' +
       '</div>';
     marcarSeleccion();
     actualizarPrecioPreview();
@@ -433,11 +438,18 @@
 
   var FOTO_SUBIENDO = false;
 
+  function marcarBotonAgregar(deshabilitado){
+    var btn = document.getElementById('btn-agregar-pedido');
+    if (btn) btn.disabled = deshabilitado;
+  }
+
   function subirFotoPersonalizada(event){
     var file = event.target.files[0];
     if (!file) return;
     FOTO_SUBIENDO = true;
+    marcarBotonAgregar(true);
     var msgEl = document.getElementById('foto-personalizado-msg');
+    msgEl.className = 'foto-status subiendo';
     msgEl.textContent = 'Subiendo foto… esperá antes de agregar al pedido.';
     var reader = new FileReader();
     reader.onload = function(e){
@@ -462,15 +474,20 @@
           .then(function(r){ return r.json(); })
           .then(function(res){
             FOTO_SUBIENDO = false;
+            marcarBotonAgregar(false);
             if (res.success){
               seleccionActual.fotoUrl = res.url;
+              msgEl.className = 'foto-status ok';
               msgEl.textContent = '¡Foto subida!';
             } else {
+              msgEl.className = 'foto-status error';
               msgEl.textContent = 'No se pudo subir la foto. Podés seguir sin ella.';
             }
           })
           .catch(function(){
             FOTO_SUBIENDO = false;
+            marcarBotonAgregar(false);
+            msgEl.className = 'foto-status error';
             msgEl.textContent = 'No se pudo subir la foto. Podés seguir sin ella.';
           });
       };
