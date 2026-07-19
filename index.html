@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Catálogo PUPINA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,12 +74,18 @@
     color: var(--text); box-shadow: 0 2px 10px rgba(230,80,140,.15);
   }
   .custom-cta{
-    max-width: 720px; margin: 16px auto 0; padding: 0 16px;
+    max-width: 720px; margin: 18px auto 0; padding: 0 16px;
   }
   .custom-cta button{
-    width:100%; background:#fff; color: var(--pink-dark); border: 2px dashed var(--pink);
-    border-radius: 999px; padding: 12px; font-size: 14px; font-weight: 600; cursor:pointer;
+    width:100%; background: linear-gradient(135deg, var(--pink), var(--pink-dark)); color:#fff; border: none;
+    border-radius: 999px; padding: 16px; font-size: 15.5px; font-weight: 700; cursor:pointer;
     font-family:'Fredoka','Quicksand',sans-serif;
+    box-shadow: 0 5px 16px rgba(240,76,120,.45);
+    animation: pulse-cta 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse-cta{
+    0%, 100%{ transform: scale(1); }
+    50%{ transform: scale(1.025); }
   }
   .filtros{ max-width: 720px; margin: 18px auto 0; padding: 0 16px; }
   .buscador-input{
@@ -350,7 +359,7 @@
   }
 
   function abrirPersonalizado(){
-    seleccionActual = { tipo: 'personalizado', nombre: 'Diseño 100% personalizado', linea: '', variante: 'personalizado', detalle: '', cantidad: 1 };
+    seleccionActual = { tipo: 'personalizado', nombre: 'Diseño 100% personalizado', linea: 'plana', variante: 'personalizado', detalle: '', fotoUrl: '', cantidad: 1 };
     pintarSheetPersonalizado();
     document.getElementById('overlay').classList.add('open');
   }
@@ -399,8 +408,14 @@
     document.getElementById('sheet').innerHTML =
       '<h2>✨ Diseño 100% personalizado</h2>' +
       '<p style="font-size:13px;color:#a35">Creamos un diseño exclusivo desde cero para vos.</p>' +
-      '<div class="field-label">Contanos tu idea</div>' +
-      '<input class="detalle-input" id="detalle-input" placeholder="Ej: marcapáginas con mi mascota y mi nombre" oninput="seleccionActual.detalle=this.value">' +
+      '<div class="field-label">Línea</div>' +
+      '<div class="options">' + opt('linea','fold','Fold (imantado)') + opt('linea','plana','Plana') + '</div>' +
+      '<div class="field-label">Contanos cómo lo querés (fondo, colores, frase, etc.)</div>' +
+      '<textarea class="detalle-input" id="detalle-input" rows="3" placeholder="Ej: fondo celeste, letras doradas, el nombre Mica y una luna" oninput="seleccionActual.detalle=this.value"></textarea>' +
+      '<div class="field-label">Foto de referencia (opcional)</div>' +
+      '<input type="file" id="foto-personalizado-input" accept="image/*" onchange="subirFotoPersonalizada(event)">' +
+      '<div id="foto-personalizado-msg" style="font-size:12px;color:#a35;margin-top:6px"></div>' +
+      '<img id="foto-personalizado-preview" style="width:90px;border-radius:10px;margin-top:8px;display:none">' +
       '<div class="field-label">Cantidad</div>' +
       '<div class="qty-row">' +
         '<button class="qty-btn" onclick="cambiarCantidad(-1)">–</button>' +
@@ -412,7 +427,51 @@
         '<button class="btn-secondary" onclick="cerrarSheet()">Cancelar</button>' +
         '<button class="btn-primary" onclick="agregarAlPedido()">Agregar al pedido</button>' +
       '</div>';
+    marcarSeleccion();
     actualizarPrecioPreview();
+  }
+
+  function subirFotoPersonalizada(event){
+    var file = event.target.files[0];
+    if (!file) return;
+    var msgEl = document.getElementById('foto-personalizado-msg');
+    msgEl.textContent = 'Subiendo foto…';
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var maxW = 1200;
+        var scale = Math.min(1, maxW / img.width);
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        var base64Data = dataUrl.split(',')[1];
+        var fileName = (file.name || 'foto').replace(/\.[^.]+$/, '') + '.jpg';
+        document.getElementById('foto-personalizado-preview').src = dataUrl;
+        document.getElementById('foto-personalizado-preview').style.display = 'block';
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ accion: 'subirFotoPersonalizada', base64Data: base64Data, mimeType: 'image/jpeg', fileName: fileName })
+        })
+          .then(function(r){ return r.json(); })
+          .then(function(res){
+            if (res.success){
+              seleccionActual.fotoUrl = res.url;
+              msgEl.textContent = '¡Foto subida!';
+            } else {
+              msgEl.textContent = 'No se pudo subir la foto. Podés seguir sin ella.';
+            }
+          })
+          .catch(function(){
+            msgEl.textContent = 'No se pudo subir la foto. Podés seguir sin ella.';
+          });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   function opt(grupo, valor, label){
@@ -459,6 +518,7 @@
       linea: s.linea,
       variante: s.variante,
       detalle: s.detalle,
+      fotoUrl: s.fotoUrl || '',
       cantidad: s.cantidad,
       precioUnit: precioDe(s)
     };
@@ -541,22 +601,24 @@
     var bloques = CART.map(function(item){
       var lineaTipo;
       if (item.variante === 'personalizado') {
-        lineaTipo = E_STAR + ' Personalizado';
+        var lineaTxtP = item.linea === 'fold' ? 'Fold' : item.linea === 'plana' ? 'Plana' : '';
+        lineaTipo = E_STAR + ' Personalizado' + (lineaTxtP ? ' · ' + lineaTxtP : '');
       } else {
         var lineaTxt = item.linea === 'fold' ? 'Fold' : 'Plana';
         var tipoTxt = item.variante === 'original' ? 'Original' : 'Adaptado';
         lineaTipo = E_STAR + ' ' + lineaTxt + ' · ' + tipoTxt;
       }
       var detalleLinea = item.detalle ? ('\n' + E_STAR + ' Detalle: ' + item.detalle) : '';
+      var fotoLinea = item.fotoUrl ? ('\n' + E_STAR + ' Foto de referencia: ' + item.fotoUrl) : '';
       var subtotal = item.precioUnit * item.cantidad;
-      return E_HEART_WHITE + ' ' + item.nombre + '\n' + lineaTipo + detalleLinea +
+      return E_HEART_WHITE + ' ' + item.nombre + '\n' + lineaTipo + detalleLinea + fotoLinea +
         '\n' + E_STAR + ' Cantidad: ' + item.cantidad +
         '\n' + E_STAR + ' $' + subtotal.toLocaleString('es-AR');
     }).join('\n\n');
 
     var msg;
     if (esConsulta) {
-      msg = E_HEART_WHITE + ' ¡Hola!\nQuería consultar sobre estos diseños:\n\n' +
+      msg = E_HEART_WHITE + ' ¡Hola!\nQuería consultar sobre estos diseños antes de decidir:\n\n' +
         E_SHOPPING_BAGS + ' Me interesa\n' + bloques + '\n\n' +
         E_HEART_SPARK + ' Total aproximado: $' + total.toLocaleString('es-AR') + '\n\n' +
         '¡Muchas gracias! ' + E_HEART_PINK;
